@@ -7,9 +7,15 @@
  If they catch it 5 times, that increases their score by one
  and whatever the final score is after 5 minutes, that is the amount of UCLs they win.
  */
+// searched on google
 PImage arsenal;
+// got this from https://www.kibrispdr.org/detail-36/logo-ucl-png.html
+PImage ucl;
+
 int arsenalX, arsenalY;
+int uclX, uclY;
 int screen = 0;
+int difficulty = 0;
 color mainBg;
 color gameBg;
 boolean inStartingScreen = true;
@@ -35,6 +41,10 @@ void setup() {
   arsenal = loadImage("arsenal.png");
   arsenalX = 220;
   arsenalY = 100;
+
+  ucl = loadImage("ucl png.png");
+  uclX = 100;
+  uclY = 170;
 }
 
 void draw() {
@@ -48,25 +58,47 @@ void draw() {
       textSize(35);
       text("Arsenal: Road To The UCL", 160, 50);
       image(arsenal, arsenalX, arsenalY, 250, 250);
-      fill(0,200,0);
-      rect(playButtonMinX, playButtonMinY, 120,120,25);
-    } if (screen == 1) {
-      
+      image(ucl, uclX, uclY, 80, 120);
+      image(ucl, 510, 170, 80, 120);
+      textSize(25);
+      text("How many UCLs can you win with Arsenal?", 130, 370);
+      fill(230, 0, 0);
+      rect(playButtonMinX, playButtonMinY, 120, 120, 25);
+      textSize(30);
+      fill(255, 255, 255);
+      text("Play", 315, 555);
+      fill(255, 255, 255);
+      triangle(
+        playButtonMinX + 42, playButtonMinY + 30,
+        playButtonMinX + 42, playButtonMinY + 90,
+        playButtonMinX + 88, playButtonMinY + 60
+        );
     }
-    if (screen == 2) {
-      fill(0, 155, 0);
-      rect(easyMinX, easyMinY, 400, 50);
-      textSize(30);
-      fill(255, 255, 255);
-      text("Easy", 115, 290);
+  }
+  if (screen == 1) {
+    inStartingScreen = false;
+    background(200,0,0);
+    fill(0, 155, 0);
+    rect(easyMinX, easyMinY, 400, 50);
+    textSize(30);
+    fill(255, 255, 255);
+    text("Easy", 115, 290);
 
 
+    fill(200, 0, 0);
+    rect(hardMinX, hardMinY, 400, 50);
+    textSize(30);
+    fill(255, 255, 255);
+    text("Hard", 515, 290);
+  }
+}
 
-      fill(200, 0, 0);
-      rect(hardMinX, hardMinY, 400, 50);
-      textSize(30);
-      fill(255, 255, 255);
-      text("Hard", 515, 290);
+void mousePressed() {
+  if (screen == 0 && inStartingScreen) {
+    if (mouseX >= playButtonMinX && mouseX <= playButtonMaxX
+      && mouseY >= playButtonMinY && mouseY <= playButtonMaxY) {
+      inStartingScreen = false;
+      screen = 1;
     }
   }
 }
