@@ -11,6 +11,7 @@
 PImage arsenal;
 // got this from https://www.kibrispdr.org/detail-36/logo-ucl-png.html
 PImage ucl;
+PImage arsenalBg;
 
 int arsenalX, arsenalY;
 int uclX, uclY;
@@ -21,26 +22,32 @@ color gameBg;
 boolean inStartingScreen = true;
 
 int easyMinX = 160;
-int easyMaxX = easyMinX + 400;
-int easyMinY = 420;
-int easyMaxY = easyMinY + 50;
+int easyMaxX = 540;
+int easyMinY = 205;
+int easyMaxY = 330;
 
 
 int hardMinX = 160;
-int hardMaxX = hardMinX + 130;
-int hardMinY = 500;
-int hardMaxY = hardMinY + 50;
+int hardMaxX = 540;
+int hardMinY = 367;
+int hardMaxY = 485;
 
 int playButtonMinX = 280;
 int playButtonMaxX = playButtonMinX + 120;
 int playButtonMinY = 400;
 int playButtonMaxY = playButtonMinY + 120;
 
+int arsenalBGwidth = 700;
+int arsenalBGheight = 600;
+
 void setup() {
   size(700, 600);
   arsenal = loadImage("arsenal.png");
   arsenalX = 220;
   arsenalY = 100;
+  
+  // AI generated image
+  arsenalBg = loadImage("arsenal -bg-image.png");
 
   ucl = loadImage("ucl png.png");
   uclX = 100;
@@ -48,8 +55,6 @@ void setup() {
 }
 
 void draw() {
-
-
   if (screen == 0) {
     if (inStartingScreen) {
       background(183, 12, 45);
@@ -74,31 +79,41 @@ void draw() {
         playButtonMinX + 88, playButtonMinY + 60
         );
     }
-  }
-  if (screen == 1) {
+  } else if (screen == 1) {
+    image(arsenalBg, 0, 0, arsenalBGwidth, arsenalBGheight);
     inStartingScreen = false;
-    background(200,0,0);
-    fill(0, 155, 0);
-    rect(easyMinX, easyMinY, 400, 50);
-    textSize(30);
-    fill(255, 255, 255);
-    text("Easy", 115, 290);
-
-
-    fill(200, 0, 0);
-    rect(hardMinX, hardMinY, 400, 50);
-    textSize(30);
-    fill(255, 255, 255);
-    text("Hard", 515, 290);
+  } else if (screen == 2) {
+    background(200,200,200);
+    difficulty = 1;
+  } else if (screen == 3) {
+    background(200,200,200);
   }
+  
 }
 
 void mousePressed() {
-  if (screen == 0 && inStartingScreen) {
+
+  if (screen == 0 && inStartingScreen ) {
+
     if (mouseX >= playButtonMinX && mouseX <= playButtonMaxX
       && mouseY >= playButtonMinY && mouseY <= playButtonMaxY) {
+
       inStartingScreen = false;
       screen = 1;
+    }
+  } else if (screen == 1) {
+    if (mouseX >= easyMinX && mouseX <= easyMaxX
+      && mouseY >= easyMinY && mouseY <= easyMaxY) {
+
+      difficulty = 1;
+      screen = 2;
+      println("Easy clicked");
+    } else if (mouseX >= hardMinX && mouseX <= hardMaxX
+      && mouseY >= hardMinY && mouseY <= hardMaxY) {
+
+      difficulty = 2;
+      screen = 2;
+      println("Hard clicked");
     }
   }
 }
