@@ -7,9 +7,9 @@
  If they catch it 5 times, that increases their score by one
  and whatever the final score is after 5 minutes, that is the amount of UCLs they win.
  */
-// searched on google
+
 PImage arsenal;
-// got this from https://www.kibrispdr.org/detail-36/logo-ucl-png.html
+
 PImage ucl;
 PImage arsenalBg;
 PImage arsenalMainBg;
@@ -43,15 +43,18 @@ int arsenalBGheight = 600;
 
 void setup() {
   size(698, 600);
+  // ChatGPT made this for me
   arsenal = loadImage("arsenal.png");
   arsenalX = 220;
   arsenalY = 100;
-  
+
+  // ChatGPT made this for me
   arsenalMainBg = loadImage("arsenalMainBg.png");
-  
-  // AI generated image
+
+  // AI generated image by ChatGPT
   arsenalBg = loadImage("arsenal -bg-image.png");
 
+  // got this from https://www.kibrispdr.org/detail-36/logo-ucl-png.html
   ucl = loadImage("ucl png.png");
   uclX = 100;
   uclY = 170;
@@ -85,14 +88,17 @@ void draw() {
   } else if (screen == 1) {
     image(arsenalBg, 0, 0, arsenalBGwidth, arsenalBGheight);
     inStartingScreen = false;
-  } else if (screen == 2) {
-    background(200,200,200);
+  } else if (screen == 2) { // easy mode screen
+    background(200, 0, 0);
     difficulty = 1;
+    image(arsenal, arsenalX, arsenalY,200,200);
   } else if (screen == 3) {
-    background(200,200,200);
+    difficulty = 2;
+    background(200, 0, 0);
   }
-  
 }
+
+
 
 void mousePressed() {
 
@@ -115,8 +121,16 @@ void mousePressed() {
       && mouseY >= hardMinY && mouseY <= hardMaxY) {
 
       difficulty = 2;
-      screen = 2;
+      screen = 3;
       println("Hard clicked");
+    }
+  }
+}
+
+void keyPressed() {
+  if (screen == 2 && screen == 3) {
+    if (key == 'w' || key == 'W') {
+      arsenalY = arsenalY - 5;
     }
   }
 }
