@@ -12,6 +12,7 @@ PImage arsenal;
 // got this from https://www.kibrispdr.org/detail-36/logo-ucl-png.html
 PImage ucl;
 PImage arsenalBg;
+PImage arsenalMainBg;
 
 int arsenalX, arsenalY;
 int uclX, uclY;
@@ -41,10 +42,12 @@ int arsenalBGwidth = 700;
 int arsenalBGheight = 600;
 
 void setup() {
-  size(700, 600);
+  size(698, 600);
   arsenal = loadImage("arsenal.png");
   arsenalX = 220;
   arsenalY = 100;
+  
+  arsenalMainBg = loadImage("arsenalMainBg.png");
   
   // AI generated image
   arsenalBg = loadImage("arsenal -bg-image.png");
@@ -57,7 +60,7 @@ void setup() {
 void draw() {
   if (screen == 0) {
     if (inStartingScreen) {
-      background(183, 12, 45);
+      background(arsenalMainBg);
       textAlign(LEFT, BASELINE);
       fill(255);
       textSize(35);
