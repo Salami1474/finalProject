@@ -91,7 +91,7 @@ void draw() {
   } else if (screen == 2) { // easy mode screen
     background(200, 0, 0);
     difficulty = 1;
-    image(arsenal, arsenalX, arsenalY,200,200);
+    image(arsenal, 100,100,200,200);
   } else if (screen == 3) {
     difficulty = 2;
     background(200, 0, 0);
@@ -128,6 +128,7 @@ void mousePressed() {
 }
 
 void keyPressed() {
+  println("Key " + key + " was pressed (" + keyCode + ")");
   if (screen == 2 && screen == 3) {
     if (key == 'w' || key == 'W') {
       arsenalY = arsenalY - 5;
