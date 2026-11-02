@@ -91,10 +91,18 @@ void draw() {
   } else if (screen == 2) { // easy mode screen
     background(200, 0, 0);
     difficulty = 1;
-    image(arsenal, 100,100,200,200);
+    image(arsenal, arsenalX, arsenalY, 150, 150);
   } else if (screen == 3) {
     difficulty = 2;
     background(200, 0, 0);
+    image(arsenal, arsenalX, arsenalY, 150, 150);
+  }
+  if (screen == 2 || screen == 3) {
+    textSize(20);
+    text("W - Up", 30, 35);
+    text("A - Left", 30, 65);
+    text("S - Down", 30, 95);
+    text("D - Right", 30, 125);
   }
 }
 
@@ -129,9 +137,19 @@ void mousePressed() {
 
 void keyPressed() {
   println("Key " + key + " was pressed (" + keyCode + ")");
-  if (screen == 2 && screen == 3) {
+  if (screen == 2 || screen == 3) {
     if (key == 'w' || key == 'W') {
-      arsenalY = arsenalY - 5;
+      arsenalY = arsenalY - 10;
     }
+    if (key == 'a' || key == 'A') {
+      arsenalX = arsenalX - 10;
+    }
+    if (key == 's' || key == 'S') {
+      arsenalY = arsenalY + 10;
+    }
+    if (key == 'd' || key == 'D') {
+      arsenalX = arsenalX + 10;
+    } 
+    
   }
 }
