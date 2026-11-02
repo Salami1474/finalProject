@@ -98,7 +98,10 @@ void draw() {
     image(arsenal, arsenalX, arsenalY, 150, 150);
   }
   if (screen == 2 || screen == 3) {
+    fill(200, 100, 0);
+    rect(20, 35, 100, 300);
     textSize(20);
+    fill(255, 255, 255);
     text("W - Up", 30, 35);
     text("A - Left", 30, 65);
     text("S - Down", 30, 95);
@@ -149,7 +152,21 @@ void keyPressed() {
     }
     if (key == 'd' || key == 'D') {
       arsenalX = arsenalX + 10;
-    } 
-    
+    }
+    //bounds check
+    if (arsenalX < 0) {
+      arsenalX = 0 ;
+    }
+    if (arsenalY < 0) {
+      arsenalY = 0 ;
+    }
+    int maxX = width - 205;
+    if (arsenalX > maxX) {
+      arsenalX = maxX;
+    }
+    int maxY = height - 130;
+    if (arsenalY > maxY) {
+      arsenalY = maxY;
+    }
   }
 }
