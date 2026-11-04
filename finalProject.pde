@@ -16,6 +16,10 @@ PImage arsenalMainBg;
 PImage arsenalGameBg;
 
 int arsenalX, arsenalY;
+float arsenalSpeed = 5;
+float arsenalMoveX = 0;
+float arsenalMoveY = 0;
+
 float uclX, uclY;
 float uclSpeed = 0;
 float uclTargetX, uclTargetY;
@@ -49,6 +53,8 @@ int arsenalBGwidth = 700;
 int arsenalBGheight = 600;
 
 int score;
+
+boolean gameOver = false;
 
 void setup() {
   size(698, 600);
@@ -103,16 +109,36 @@ void draw() {
     image(arsenalBg, 0, 0, arsenalBGwidth, arsenalBGheight);
     inStartingScreen = false;
   } else if (screen == 2) { // easy mode screen
-  uclSpeed = 2;
+    uclSpeed = 2;
     background(200, 0, 0);
     difficulty = 1;
   } else if (screen == 3) {
-    uclSpeed = 5;
+    uclSpeed = 7;
     difficulty = 2;
     background(200, 0, 0);
   }
   if (screen == 2 || screen == 3) {
     background(arsenalGameBg);
+    arsenalX = arsenalX + (int)arsenalMoveX;
+    arsenalY = arsenalY + (int)arsenalMoveY;
+
+    if (arsenalX < 0) {
+      arsenalX = 0;
+    }
+
+    if (arsenalX > width - 100) {
+      arsenalX = width - 100;
+    }
+
+    if (arsenalY < 53) {
+      arsenalY = 53;
+    }
+
+    if (arsenalY > height - 100) {
+      arsenalY = height - 100;
+    }
+
+
     image(arsenal, arsenalX, arsenalY, 100, 100);
     fill(200, 0, 0);
     rect(20, 8, 310, 45, 25);
@@ -122,6 +148,9 @@ void draw() {
     text("A - Left", 100, 35);
     text("S - Down", 170, 35);
     text("D - Right", 250, 35);
+    fill(100, 0, 0);
+    rect(585, 14, 100, 40);
+    fill(255, 255, 255);
     text("Score: " + score, 600, 40);
 
 
@@ -143,63 +172,73 @@ void draw() {
 
 
 
-  void mousePressed() {
+void mousePressed() {
 
-    if (screen == 0 && inStartingScreen ) {
+  if (screen == 0 && inStartingScreen ) {
 
-      if (mouseX >= playButtonMinX && mouseX <= playButtonMaxX
-        && mouseY >= playButtonMinY && mouseY <= playButtonMaxY) {
+    if (mouseX >= playButtonMinX && mouseX <= playButtonMaxX
+      && mouseY >= playButtonMinY && mouseY <= playButtonMaxY) {
 
-        inStartingScreen = false;
-        screen = 1;
-      }
-    } else if (screen == 1) {
-      if (mouseX >= easyMinX && mouseX <= easyMaxX
-        && mouseY >= easyMinY && mouseY <= easyMaxY) {
+      inStartingScreen = false;
+      screen = 1;
+    }
+  } else if (screen == 1) {
+    if (mouseX >= easyMinX && mouseX <= easyMaxX
+      && mouseY >= easyMinY && mouseY <= easyMaxY) {
 
-        difficulty = 1;
-        screen = 2;
-        println("Easy clicked");
-      } else if (mouseX >= hardMinX && mouseX <= hardMaxX
-        && mouseY >= hardMinY && mouseY <= hardMaxY) {
+      difficulty = 1;
+      screen = 2;
+      println("Easy clicked");
+    } else if (mouseX >= hardMinX && mouseX <= hardMaxX
+      && mouseY >= hardMinY && mouseY <= hardMaxY) {
 
-        difficulty = 2;
-        screen = 3;
-        println("Hard clicked");
-      }
+      difficulty = 2;
+      screen = 3;
+      println("Hard clicked");
     }
   }
+}
 
-  void keyPressed() {
-    println("Key " + key + " was pressed (" + keyCode + ")");
-    if (screen == 2 || screen == 3) {
-      if (key == 'w' || key == 'W') {
-        arsenalY = arsenalY - 10;
-      }
-      if (key == 'a' || key == 'A') {
-        arsenalX = arsenalX - 10;
-      }
-      if (key == 's' || key == 'S') {
-        arsenalY = arsenalY + 10;
-      }
-      if (key == 'd' || key == 'D') {
-        arsenalX = arsenalX + 10;
-      }
-      //bounds check
-      if (arsenalX < 0) {
-        arsenalX = 0 ;
-      }
-      if (arsenalY < 53) {
-        arsenalY = 53;
-      }
-      int maxX = width - 160;
-      if (arsenalX > maxX) {
-        arsenalX = maxX;
-      }
-      int maxY = height - 160;
+void keyPressed() {
+  println("Key " + key + " was pressed (" + keyCode + ")");
+  if (screen == 2 || screen == 3) {
+    if (key == 'w' || key == 'W') {
+      arsenalMoveY = -arsenalSpeed;
+    }
+    if (key == 'a' || key == 'A') {
+      arsenalMoveX = -arsenalSpeed;
+    }
+    if (key == 's' || key == 'S') {
+      arsenalMoveY = arsenalSpeed;
+    }
+    if (key == 'd' || key == 'D') {
+      arsenalMoveX = arsenalSpeed;
+    }
+    //bounds check
+    if (arsenalX < 0) {
+      arsenalX = 0 ;
+    }
+    if (arsenalY < 53) {
+      arsenalY = 53;
+    }
+    int maxX = width - 160;
+    if (arsenalX > maxX) {
+      arsenalX = maxX;
+    }
+    int maxY = height - 160;
 
-      if (arsenalY > maxY) {
-        arsenalY = maxY;
-      }
+    if (arsenalY > maxY) {
+      arsenalY = maxY;
     }
   }
+}
+
+void keyReleased() {
+  if (key == 'w' || key == 'W' || key == 's' || key == 'S') {
+    arsenalMoveY = 0;
+  }
+
+  if (key == 'a' || key == 'A' || key == 'd' || key == 'D') {
+    arsenalMoveX = 0;
+  }
+}
