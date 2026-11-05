@@ -56,6 +56,11 @@ int score;
 
 boolean gameOver = false;
 
+boolean touching = false;
+
+int startTime;
+int timeLeft = 60;
+
 void setup() {
   size(698, 600);
   // ChatGPT made this for me
@@ -113,15 +118,26 @@ void draw() {
     background(200, 0, 0);
     difficulty = 1;
   } else if (screen == 3) {
-    uclSpeed = 7;
+    uclSpeed = 5;
     difficulty = 2;
     background(200, 0, 0);
   }
   if (screen == 2 || screen == 3) {
-    background(arsenalGameBg);
-    arsenalX = arsenalX + (int)arsenalMoveX;
-    arsenalY = arsenalY + (int)arsenalMoveY;
+    if (difficulty == 1) {
+      timeLeft = 60 - (millis() - startTime)/1000;
+    } else if (difficulty == 2) {
+      timeLeft = 30 - (millis() - startTime)/ 1000;
+    }
 
+    if (timeLeft<= 0) {
+      timeLeft = 0;
+      gameOver=true;
+    }
+    background(arsenalGameBg);
+    if (gameOver == false) {
+      arsenalX = arsenalX + (int)arsenalMoveX;
+      arsenalY = arsenalY + (int)arsenalMoveY;
+    }
     if (arsenalX < 0) {
       arsenalX = 0;
     }
@@ -153,22 +169,46 @@ void draw() {
     fill(255, 255, 255);
     text("Score: " + score, 600, 40);
 
+    fill(100, 0, 0);
+    rect(450, 14, 120, 40);
+    fill(255, 255, 255);
+    text("Time: " + timeLeft, 465, 40);
 
-    float directionX = uclTargetX - uclX;
-    float directionY = uclTargetY - uclY;
+    if (gameOver == false) {
+      float directionX = uclTargetX - uclX;
+      float directionY = uclTargetY - uclY;
 
-    float distance = dist(uclX, uclY, uclTargetX, uclTargetY);
+      float distance = dist(uclX, uclY, uclTargetX, uclTargetY);
 
-    if (distance > uclSpeed) {
-      uclX = uclX + (directionX/distance) * uclSpeed;
-      uclY = uclY + (directionY/distance) * uclSpeed;
-    } else {
-      uclTargetX = random(0, width - 50);
-      uclTargetY = random(100, height - 100);
+      if (distance > uclSpeed) {
+        uclX = uclX + (directionX/distance) * uclSpeed;
+        uclY = uclY + (directionY/distance) * uclSpeed;
+      } else {
+        uclTargetX = random(0, width - 50);
+        uclTargetY = random(100, height - 100);
+      }
+      image(ucl, uclX, uclY, 50, 80);
+      if (arsenalX + 100 >= uclX &&
+        arsenalX <= uclX + 50 &&
+        arsenalY + 100 >= uclY &&
+        arsenalY <= uclY + 80) {
+
+        if (touching == false) {
+          score = score + 1;
+
+          // Move the UCL to a new random location
+          uclX = random(0, width - 50);
+          uclY = random(100, height - 80);
+
+          touching = true;
+        }
+      } else {
+        touching = false;
+      }
     }
-    image(ucl, uclX, uclY, 50, 80);
   }
 }
+
 
 
 
@@ -188,12 +228,22 @@ void mousePressed() {
 
       difficulty = 1;
       screen = 2;
+      startTime = millis();
+      timeLeft=60;
+      score = 0;
+      gameOver = false;
+      touching = false;
       println("Easy clicked");
     } else if (mouseX >= hardMinX && mouseX <= hardMaxX
       && mouseY >= hardMinY && mouseY <= hardMaxY) {
 
       difficulty = 2;
       screen = 3;
+      startTime=millis();
+      timeLeft = 30;
+      score = 0;
+      gameOver = false;
+      touching = false;
       println("Hard clicked");
     }
   }
