@@ -7,6 +7,12 @@
  If they catch it 5 times, that increases their score by one
  and whatever the final score is after 5 minutes, that is the amount of UCLs they win.
  */
+ 
+ /* To do:  when the game is over, need to put a game over screen
+    with the score that the user got.
+    Also need to add a restart button.
+    And a go back to main page button.
+    */
 
 PImage arsenal;
 
@@ -82,7 +88,7 @@ void setup() {
   uclX = 100;
   uclY = 170;
   uclTargetX = random(0, width - 50);
-  uclTargetY = random(100, height - 80);
+  uclTargetY = random(70, height - 80);
 }
 
 void draw() {
@@ -114,11 +120,11 @@ void draw() {
     image(arsenalBg, 0, 0, arsenalBGwidth, arsenalBGheight);
     inStartingScreen = false;
   } else if (screen == 2) { // easy mode screen
-    uclSpeed = 2;
+    uclSpeed = 3;
     background(200, 0, 0);
     difficulty = 1;
   } else if (screen == 3) {
-    uclSpeed = 5;
+    uclSpeed = 6;
     difficulty = 2;
     background(200, 0, 0);
   }
@@ -129,7 +135,7 @@ void draw() {
       timeLeft = 30 - (millis() - startTime)/ 1000;
     }
 
-    if (timeLeft<= 0) {
+    if (timeLeft <= 0) {
       timeLeft = 0;
       gameOver=true;
     }
@@ -155,7 +161,7 @@ void draw() {
     }
 
 
-    image(arsenal, arsenalX, arsenalY, 100, 100);
+    image(arsenal, arsenalX, arsenalY, 70, 70);
     fill(200, 0, 0);
     rect(20, 8, 310, 45, 25);
     textSize(20);
@@ -185,20 +191,20 @@ void draw() {
         uclY = uclY + (directionY/distance) * uclSpeed;
       } else {
         uclTargetX = random(0, width - 50);
-        uclTargetY = random(100, height - 100);
+        uclTargetY = random(70, height - 80);
       }
       image(ucl, uclX, uclY, 50, 80);
-      if (arsenalX + 100 >= uclX &&
-        arsenalX <= uclX + 50 &&
-        arsenalY + 100 >= uclY &&
-        arsenalY <= uclY + 80) {
+      if (arsenalX + 70 >= uclX &&
+        arsenalX <= uclX + 30 &&
+        arsenalY + 70 >= uclY &&
+        arsenalY <= uclY + 30) {
 
         if (touching == false) {
           score = score + 1;
 
           // Move the UCL to a new random location
           uclX = random(0, width - 50);
-          uclY = random(100, height - 80);
+          uclY = random(70, height - 80);
 
           touching = true;
         }
