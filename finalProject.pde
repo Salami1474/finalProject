@@ -7,12 +7,12 @@
  If they catch it 5 times, that increases their score by one
  and whatever the final score is after 5 minutes, that is the amount of UCLs they win.
  */
- 
- /* To do:  when the game is over, need to put a game over screen
-    with the score that the user got.
-    Also need to add a restart button.
-    And a go back to main page button.
-    */
+
+/* To do:  when the game is over, need to put a game over screen
+ with the score that the user got.
+ Also need to add a restart button.
+ And a go back to main page button.
+ */
 
 PImage arsenal;
 
@@ -123,17 +123,41 @@ void draw() {
     uclSpeed = 3;
     background(200, 0, 0);
     difficulty = 1;
+    if (gameOver == true) {
+      screen = 5;
+      background(0, 0, 0);
+      textSize(50);
+      text("Game Over", 230, 100);
+      textSize(30);
+      text("You Score was: " + score, 240, 250);
+      text("You helped Arsenal win " + score/5 + " UCLs!!", 160, 400);
+      textSize(25);
+      text("Press 'R' to Restart the level", 220, 470);
+    }
   } else if (screen == 3) {
     uclSpeed = 6;
     difficulty = 2;
     background(200, 0, 0);
+    if (gameOver == true) {
+      screen = 5;
+      background(0, 0, 0);
+      textSize(50);
+      text("Game Over", 230, 100);
+      textSize(30);
+      text("You Score was: " + score, 240, 250);
+      text("You helped Arsenal win " + score/5 + " UCLs!!", 160, 400);
+      textSize(25);
+      text("Press 'R' to Restart the level", 220, 470);
+    }
   }
   if (screen == 2 || screen == 3) {
+
     if (difficulty == 1) {
       timeLeft = 60 - (millis() - startTime)/1000;
     } else if (difficulty == 2) {
       timeLeft = 30 - (millis() - startTime)/ 1000;
     }
+
 
     if (timeLeft <= 0) {
       timeLeft = 0;
@@ -287,7 +311,28 @@ void keyPressed() {
       arsenalY = maxY;
     }
   }
+  if (screen == 5) {
+    if (key == 'R' || key == 'r') {
+
+      gameOver = false;
+      score = 0;
+      touching = false;
+
+      if (difficulty == 1) {
+        screen = 2;
+        timeLeft = 60;
+      } else if (difficulty == 2) {
+        screen = 3;
+        timeLeft = 30;
+      }
+
+      startTime = millis();
+
+      return;
+    }
+  }
 }
+
 
 void keyReleased() {
   if (key == 'w' || key == 'W' || key == 's' || key == 'S') {
