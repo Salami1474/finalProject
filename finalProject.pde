@@ -110,9 +110,9 @@ void draw() {
       textSize(25);
       text("How many UCLs can you win with Arsenal?", 130, 370);
       fill(230, 0, 0);
-      stroke(255,255,255);
+      stroke(255, 255, 255);
       rect(playButtonMinX, playButtonMinY, 120, 120, 25);
-      stroke(0,0,0);
+      stroke(0, 0, 0);
       textSize(30);
       fill(255, 255, 255);
       text("Play", 315, 555);
@@ -196,9 +196,11 @@ void draw() {
 
     image(arsenal, arsenalX, arsenalY, 70, 70);
     fill(200, 0, 0);
+    noStroke();
     rect(20, 8, 310, 45, 25);
     textSize(20);
     fill(255, 255, 255);
+    textAlign(LEFT);
     text("W - Up", 30, 35);
     text("A - Left", 100, 35);
     text("S - Down", 170, 35);
@@ -302,11 +304,12 @@ void mousePressed() {
       screen = 0;
       inStartingScreen = true;
       gameOver = false;
-      
-      arsenalMoveX = 220;
-      arsenalMoveY = 100;
-      
-      
+
+      arsenalX = 220;
+      arsenalY = 100;
+
+      arsenalMoveX = 0;
+      arsenalMoveY = 0;
       return;
     }
   }
@@ -345,26 +348,44 @@ void keyPressed() {
     }
   }
   if (screen == 5) {
-    if (key == 'R' || key == 'r') {
+    if (screen == 5) {
+      if (key == 'R' || key == 'r') {
 
-      gameOver = false;
-      score = 0;
-      touching = false;
+        gameOver = false;
+        score = 0;
+        touching = false;
 
-      if (difficulty == 1) {
-        screen = 2;
-        timeLeft = 60;
-      } else if (difficulty == 2) {
-        screen = 3;
-        timeLeft = 30;
+        // Reset Arsenal's position
+        arsenalX = 220;
+        arsenalY = 100;
+
+        // Reset Arsenal's movement
+        arsenalMoveX = 0;
+        arsenalMoveY = 0;
+
+        // Reset the UCL position
+        uclX = 100;
+        uclY = 170;
+
+        uclTargetX = random(0, width - 50);
+        uclTargetY = random(70, height - 80);
+
+        if (difficulty == 1) {
+          screen = 2;
+          timeLeft = 60;
+        } else if (difficulty == 2) {
+          screen = 3;
+          timeLeft = 30;
+        }
+
+        startTime = millis();
+
+        return;
       }
-
-      startTime = millis();
-
-      return;
     }
   }
 }
+
 
 
 void keyReleased() {
