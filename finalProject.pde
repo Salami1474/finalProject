@@ -22,6 +22,11 @@ PImage arsenalMainBg;
 PImage arsenalGameBg;
 
 int arsenalX, arsenalY;
+int mainArsenalX = 215;
+int mainArsenalY = 100;
+
+int mainUclX = 100;
+int mainUclY = 170;
 float arsenalSpeed = 5;
 float arsenalMoveX = 0;
 float arsenalMoveY = 0;
@@ -99,13 +104,15 @@ void draw() {
       fill(255);
       textSize(35);
       text("Arsenal: Road To The UCL", 160, 50);
-      image(arsenal, arsenalX, arsenalY, 250, 250);
-      image(ucl, uclX, uclY, 80, 120);
+      image(arsenal, mainArsenalX, mainArsenalY, 250, 250);
+      image(ucl, mainUclX, mainUclY, 80, 120);
       image(ucl, 510, 170, 80, 120);
       textSize(25);
       text("How many UCLs can you win with Arsenal?", 130, 370);
       fill(230, 0, 0);
+      stroke(255,255,255);
       rect(playButtonMinX, playButtonMinY, 120, 120, 25);
+      stroke(0,0,0);
       textSize(30);
       fill(255, 255, 255);
       text("Play", 315, 555);
@@ -163,6 +170,8 @@ void draw() {
       timeLeft = 0;
       gameOver=true;
     }
+
+
     background(arsenalGameBg);
     if (gameOver == false) {
       arsenalX = arsenalX + (int)arsenalMoveX;
@@ -237,8 +246,18 @@ void draw() {
       }
     }
   }
-}
+  if (screen == 5) {
+    fill(239, 1, 7);
+    stroke(255, 255, 255); //adds a border around the rectangle
+    rect(259, 515, 180, 50, 10);
 
+    // Main Menu Text
+    fill(255, 255, 255);
+    textSize(22);
+    textAlign(CENTER);
+    text("Main Menu", 349, 547);
+  }
+}
 
 
 
@@ -275,6 +294,20 @@ void mousePressed() {
       gameOver = false;
       touching = false;
       println("Hard clicked");
+    }
+  }
+  if (screen == 5 && gameOver == true) {
+    if (mouseX >= 259 && mouseX <= 439 &&
+      mouseY >= 515 && mouseY <= 565) {
+      screen = 0;
+      inStartingScreen = true;
+      gameOver = false;
+      
+      arsenalMoveX = 220;
+      arsenalMoveY = 100;
+      
+      
+      return;
     }
   }
 }
