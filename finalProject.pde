@@ -8,10 +8,8 @@
  and whatever the final score is after 5 minutes, that is the amount of UCLs they win.
  */
 
-/* To do:  when the game is over, need to put a game over screen
- with the score that the user got.
- Also need to add a restart button.
- And a go back to main page button.
+/* To do:  Do JSON for high score
+   Add sound
  */
 
 PImage arsenal;
@@ -136,7 +134,7 @@ void draw() {
       textSize(50);
       text("Game Over", 230, 100);
       textSize(30);
-      text("You Score was: " + score, 240, 250);
+      text("You're Score was: " + score, 240, 250);
       text("You helped Arsenal win " + score/5 + " UCLs!!", 160, 400);
       textSize(25);
       text("Press 'R' to Restart the level", 220, 470);
