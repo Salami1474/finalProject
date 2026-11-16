@@ -9,7 +9,7 @@
  */
 
 /* To do:  Do JSON for high score
-   Add sound
+ Add sound
  */
 
 PImage arsenal;
@@ -62,6 +62,8 @@ int arsenalBGwidth = 700;
 int arsenalBGheight = 600;
 
 int score;
+int easyHighScore = 0;
+int hardHighScore = 0;
 
 boolean gameOver = false;
 
@@ -92,6 +94,19 @@ void setup() {
   uclY = 170;
   uclTargetX = random(0, width - 50);
   uclTargetY = random(70, height - 80);
+
+  // Load Easy Mode highscore
+  JSONObject easyObj = loadJSONObject("easyHighScore.json");
+
+  if (easyObj != null) {
+    easyHighScore = easyObj.getInt("highScore");
+  }
+
+  JSONObject hardObj = loadJSONObject("hardHighScore.json");
+
+  if (hardObj != null) {
+    hardHighScore = hardObj.getInt("highScore");
+  }
 }
 
 void draw() {
@@ -129,6 +144,7 @@ void draw() {
     background(200, 0, 0);
     difficulty = 1;
     if (gameOver == true) {
+      saveHighScore();
       screen = 5;
       background(0, 0, 0);
       textSize(50);
@@ -136,6 +152,12 @@ void draw() {
       textSize(30);
       text("You're Score was: " + score, 240, 250);
       text("You helped Arsenal win " + score/5 + " UCLs!!", 160, 400);
+      // Display Easy Mode High Score
+      fill(255, 215, 0);
+      textSize(22);
+
+      text("High Score: " + easyHighScore + " " + "UCLs", 255, 335);
+      fill(255, 255, 255);
       textSize(25);
       text("Press 'R' to Restart the level", 220, 470);
     }
@@ -144,6 +166,7 @@ void draw() {
     difficulty = 2;
     background(200, 0, 0);
     if (gameOver == true) {
+      saveHighScore();
       screen = 5;
       background(0, 0, 0);
       textSize(50);
@@ -151,6 +174,10 @@ void draw() {
       textSize(30);
       text("You Score was: " + score, 240, 250);
       text("You helped Arsenal win " + score/5 + " UCLs!!", 160, 400);
+      fill(255, 215, 0);
+      textSize(22);
+      text("High Score: " + hardHighScore + " UCLs", 255, 335);
+      fill(255, 255, 255);
       textSize(25);
       text("Press 'R' to Restart the level", 220, 470);
     }
@@ -393,5 +420,28 @@ void keyReleased() {
 
   if (key == 'a' || key == 'A' || key == 'd' || key == 'D') {
     arsenalMoveX = 0;
+  }
+}
+
+void saveHighScore() {
+  int uclsWon = score / 5;
+
+  if (difficulty == 1) {
+    if (uclsWon > easyHighScore) {
+
+      easyHighScore = uclsWon;
+      JSONObject easyObj = new JSONObject();
+      easyObj.setInt("highScore", easyHighScore);
+
+      saveJSONObject(easyObj, "easyHighScore.json");
+    }
+  } else if (difficulty == 2) {
+    if (uclsWon > hardHighScore) {
+      hardHighScore = uclsWon;
+      JSONObject hardObj = new JSONObject();
+      hardObj.setInt("highScore", hardHighScore);
+
+      saveJSONObject(hardObj, "hardHighScore.json");
+    }
   }
 }
