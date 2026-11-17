@@ -8,7 +8,7 @@
  and whatever the final score is after 5 minutes, that is the amount of UCLs they win.
  */
 
-/* To do:  Do JSON for high score
+/* To do:  
  Add sound
  */
 
@@ -162,7 +162,7 @@ void draw() {
       text("Press 'R' to Restart the level", 220, 470);
     }
   } else if (screen == 3) {
-    uclSpeed = 6;
+    uclSpeed = 7;
     difficulty = 2;
     background(200, 0, 0);
     if (gameOver == true) {
@@ -266,6 +266,9 @@ void draw() {
           uclX = random(0, width - 50);
           uclY = random(70, height - 80);
 
+          uclTargetX = random(0,width - 50);
+          uclTargetY = random(70, height - 80);
+          
           touching = true;
         }
       } else {
