@@ -150,7 +150,7 @@ void draw() {
       textSize(50);
       text("Game Over", 230, 100);
       textSize(30);
-      text("You're Score was: " + score, 240, 250);
+      text("Your Score was: " + score, 240, 250);
       text("You helped Arsenal win " + score/5 + " UCLs!!", 160, 400);
       // Display Easy Mode High Score
       fill(255, 215, 0);
@@ -172,7 +172,7 @@ void draw() {
       textSize(50);
       text("Game Over", 230, 100);
       textSize(30);
-      text("You Score was: " + score, 240, 250);
+      text("Your Score was: " + score, 240, 250);
       text("You helped Arsenal win " + score/5 + " UCLs!!", 160, 400);
       fill(255, 215, 0);
       textSize(22);
