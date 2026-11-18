@@ -8,7 +8,7 @@
  and whatever the final score is after 5 minutes, that is the amount of UCLs they win.
  */
 
-/* To do:  
+/* To do:
  Add sound
  */
 
@@ -18,6 +18,12 @@ PImage ucl;
 PImage arsenalBg;
 PImage arsenalMainBg;
 PImage arsenalGameBg;
+
+PImage fakeTrophy;
+float fakeTrophyX, fakeTrophyY;
+float fakeTrophyTargetX, fakeTrophyTargetY;
+float fakeTrophySpeed = 4;
+boolean touchingFake = false;
 
 int arsenalX, arsenalY;
 int mainArsenalX = 215;
@@ -94,6 +100,14 @@ void setup() {
   uclY = 170;
   uclTargetX = random(0, width - 50);
   uclTargetY = random(70, height - 80);
+
+ // the original ucl png.png image, just edited to be red
+  fakeTrophy = loadImage("fakeTrophy.png");
+  fakeTrophyX = random(0, width - 50);
+  fakeTrophyY = random(70, height - 80);
+
+  fakeTrophyTargetX = random(0, width - 50);
+  fakeTrophyTargetY = random(70, height - 80);
 
   // Load Easy Mode highscore
   JSONObject easyObj = loadJSONObject("easyHighScore.json");
@@ -241,6 +255,7 @@ void draw() {
     text("Time: " + timeLeft, 465, 40);
 
     if (gameOver == false) {
+      // ucl trophy movement
       float directionX = uclTargetX - uclX;
       float directionY = uclTargetY - uclY;
 
@@ -266,13 +281,55 @@ void draw() {
           uclX = random(0, width - 50);
           uclY = random(70, height - 80);
 
-          uclTargetX = random(0,width - 50);
+          uclTargetX = random(0, width - 50);
           uclTargetY = random(70, height - 80);
-          
+
           touching = true;
         }
       } else {
         touching = false;
+      }
+      // Fake trophy movement
+      float fakeDirectionX = fakeTrophyTargetX - fakeTrophyX;
+      float fakeDirectionY = fakeTrophyTargetY - fakeTrophyY;
+
+      float fakeDistance = dist(fakeTrophyX, fakeTrophyY,
+        fakeTrophyTargetX, fakeTrophyTargetY);
+
+      if (fakeDistance > fakeTrophySpeed) {
+        fakeTrophyX = fakeTrophyX + (fakeDirectionX / fakeDistance) * fakeTrophySpeed;
+        fakeTrophyY = fakeTrophyY + (fakeDirectionY / fakeDistance) * fakeTrophySpeed;
+      } else {
+        fakeTrophyTargetX = random(0, width - 50);
+        fakeTrophyTargetY = random(70, height - 80);
+      }
+
+      // Display fake trophy
+      image(fakeTrophy, fakeTrophyX, fakeTrophyY, 50, 80);
+
+      // Check if Arsenal touches the fake trophy
+      if (arsenalX + 70 >= fakeTrophyX &&
+        arsenalX <= fakeTrophyX + 50 &&
+        arsenalY + 70 >= fakeTrophyY &&
+        arsenalY <= fakeTrophyY + 80) {
+
+        if (touchingFake == false) {
+
+          if (score > 0) {
+            score = score - 1;
+          }
+
+          // Move fake trophy to a new random location
+          fakeTrophyX = random(0, width - 50);
+          fakeTrophyY = random(70, height - 80);
+
+          fakeTrophyTargetX = random(0, width - 50);
+          fakeTrophyTargetY = random(70, height - 80);
+
+          touchingFake = true;
+        }
+      } else {
+        touchingFake = false;
       }
     }
   }
@@ -312,6 +369,15 @@ void mousePressed() {
       score = 0;
       gameOver = false;
       touching = false;
+
+      touchingFake = false;
+
+      fakeTrophyX = random(0, width - 50);
+      fakeTrophyY = random(70, height - 80);
+
+      fakeTrophyTargetX = random(0, width - 50);
+      fakeTrophyTargetY = random(70, height - 80);
+
       println("Easy clicked");
     } else if (mouseX >= hardMinX && mouseX <= hardMaxX
       && mouseY >= hardMinY && mouseY <= hardMaxY) {
@@ -323,6 +389,14 @@ void mousePressed() {
       score = 0;
       gameOver = false;
       touching = false;
+
+      touchingFake = false;
+
+      fakeTrophyX = random(0, width - 50);
+      fakeTrophyY = random(70, height - 80);
+
+      fakeTrophyTargetX = random(0, width - 50);
+      fakeTrophyTargetY = random(70, height - 80);
       println("Hard clicked");
     }
   }
