@@ -1,3 +1,5 @@
+import processing.sound.*;
+
 /*
  Feranmi Adesanya
  Final Processing Project
@@ -12,6 +14,7 @@
  Add sound
  */
 
+
 PImage arsenal;
 
 PImage ucl;
@@ -20,6 +23,11 @@ PImage arsenalMainBg;
 PImage arsenalGameBg;
 
 PImage fakeTrophy;
+
+SoundFile trophyCollectSound;
+SoundFile errorTrophy;
+SoundFile gameOverSound;
+
 float fakeTrophyX, fakeTrophyY;
 float fakeTrophyTargetX, fakeTrophyTargetY;
 float fakeTrophySpeed = 4;
@@ -72,6 +80,7 @@ int easyHighScore = 0;
 int hardHighScore = 0;
 
 boolean gameOver = false;
+boolean gameOverSoundPlayed = false;
 
 boolean touching = false;
 
@@ -101,7 +110,7 @@ void setup() {
   uclTargetX = random(0, width - 50);
   uclTargetY = random(70, height - 80);
 
- // the original ucl png.png image, just edited to be red
+  // the original ucl png.png image, just edited to be red
   fakeTrophy = loadImage("fakeTrophy.png");
   fakeTrophyX = random(0, width - 50);
   fakeTrophyY = random(70, height - 80);
@@ -121,7 +130,16 @@ void setup() {
   if (hardObj != null) {
     hardHighScore = hardObj.getInt("highScore");
   }
+  // got this sound from https://www.youtube.com/watch?v=VIoEq-lU02s
+  trophyCollectSound = new SoundFile(this, "Flappy Bird Sound Effect (2).mp3");
+
+  // got this sound from https://pixabay.com/sound-effects/search/wrong%20buzzer/
+  errorTrophy = new SoundFile(this, "wrong.mp3");
+
+  // got this sound from Royalty Free
+  gameOverSound = new SoundFile(this, "crowdSound.mp3");
 }
+
 
 void draw() {
   if (screen == 0) {
@@ -276,7 +294,7 @@ void draw() {
 
         if (touching == false) {
           score = score + 1;
-
+          trophyCollectSound.play();
           // Move the UCL to a new random location
           uclX = random(0, width - 50);
           uclY = random(70, height - 80);
@@ -317,6 +335,7 @@ void draw() {
 
           if (score > 0) {
             score = score - 1;
+            errorTrophy.play();
           }
 
           // Move fake trophy to a new random location
@@ -333,7 +352,7 @@ void draw() {
       }
     }
   }
-  if (screen == 5) {
+  if (screen == 5 && gameOver == true) {
     fill(239, 1, 7);
     stroke(255, 255, 255); //adds a border around the rectangle
     rect(259, 515, 180, 50, 10);
@@ -343,6 +362,11 @@ void draw() {
     textSize(22);
     textAlign(CENTER);
     text("Main Menu", 349, 547);
+
+    if (gameOverSoundPlayed == false) {
+      gameOverSound.play();
+      gameOverSoundPlayed = true;
+    }
   }
 }
 
@@ -403,6 +427,11 @@ void mousePressed() {
   if (screen == 5 && gameOver == true) {
     if (mouseX >= 259 && mouseX <= 439 &&
       mouseY >= 515 && mouseY <= 565) {
+      trophyCollectSound.stop();
+      errorTrophy.stop();
+      gameOverSound.stop();
+
+      gameOverSoundPlayed = false;
       screen = 0;
       inStartingScreen = true;
       gameOver = false;
@@ -452,7 +481,11 @@ void keyPressed() {
   if (screen == 5) {
     if (screen == 5) {
       if (key == 'R' || key == 'r') {
+        trophyCollectSound.stop();
+        errorTrophy.stop();
+        gameOverSound.stop();
 
+        gameOverSoundPlayed = false;
         gameOver = false;
         score = 0;
         touching = false;
