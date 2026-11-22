@@ -7,14 +7,15 @@ import processing.sound.*;
  The user will be able to control an Arsenal logo and there will be a UCL logo moving randomly.
  The user has to move that Arsenal logo and catch the UCL.
  If they catch it 5 times, that increases their score by one
- and whatever the final score is after 5 minutes, that is the amount of UCLs they win.
+ and whatever the final score is after the amount of time given, their score divided by 5, is the amount of UCLs they win.
+ The objective is to collect as much trophies as you can.
  */
 
 /* To do:
  Add sound
  */
 
-
+// Images used for the player, trophies, and different game backgrounds.
 PImage arsenal;
 
 PImage ucl;
@@ -24,25 +25,31 @@ PImage arsenalGameBg;
 
 PImage fakeTrophy;
 
+// Sound effects played when collecting trophies, hitting fake trophies, and ending the game.
 SoundFile trophyCollectSound;
 SoundFile errorTrophy;
 SoundFile gameOverSound;
 
+// The fake trophy's current position, destination, and movement speed.
 float fakeTrophyX, fakeTrophyY;
 float fakeTrophyTargetX, fakeTrophyTargetY;
 float fakeTrophySpeed = 4;
 boolean touchingFake = false;
 
+// The Arsenal logo's position. These values change when the player moves.
 int arsenalX, arsenalY;
 int mainArsenalX = 215;
 int mainArsenalY = 100;
 
 int mainUclX = 100;
 int mainUclY = 170;
+
+// Controls how quickly the Arsenal logo moves when a WASD key is held.
 float arsenalSpeed = 5;
 float arsenalMoveX = 0;
 float arsenalMoveY = 0;
 
+// The real UCL trophy's current position and the random destination it moves toward.
 float uclX, uclY;
 float uclSpeed = 0;
 float uclTargetX, uclTargetY;
@@ -50,6 +57,8 @@ float uclMoveX, uclMoveY;
 float directionX, directionY;
 float distance;
 
+// Keeps track of which screen is being shown: 0 = title, 1 = difficulty,
+// 2 = easy game, 3 = hard game, and 5 = game over.
 int screen = 0;
 int difficulty = 0;
 color mainBg;
@@ -60,7 +69,6 @@ int easyMinX = 160;
 int easyMaxX = 540;
 int easyMinY = 205;
 int easyMaxY = 330;
-
 
 int hardMinX = 160;
 int hardMaxX = 540;
@@ -75,10 +83,12 @@ int playButtonMaxY = playButtonMinY + 120;
 int arsenalBGwidth = 700;
 int arsenalBGheight = 600;
 
+// Current score and the separate high scores for each difficulty.
 int score;
 int easyHighScore = 0;
 int hardHighScore = 0;
 
+// These booleans prevent repeated collision effects and repeated game-over sounds.
 boolean gameOver = false;
 boolean gameOverSoundPlayed = false;
 
@@ -89,6 +99,7 @@ int timeLeft = 60;
 
 void setup() {
   size(698, 600);
+
   // ChatGPT made this for me
   arsenal = loadImage("arsenal.png");
   arsenalX = 220;
@@ -118,6 +129,7 @@ void setup() {
   fakeTrophyTargetX = random(0, width - 50);
   fakeTrophyTargetY = random(70, height - 80);
 
+  // Load the saved high scores from JSON files so they remain available between game sessions.
   // Load Easy Mode highscore
   JSONObject easyObj = loadJSONObject("easyHighScore.json");
 
@@ -130,6 +142,7 @@ void setup() {
   if (hardObj != null) {
     hardHighScore = hardObj.getInt("highScore");
   }
+
   // got this sound from https://www.youtube.com/watch?v=VIoEq-lU02s
   trophyCollectSound = new SoundFile(this, "Flappy Bird Sound Effect (2).mp3");
 
@@ -142,6 +155,8 @@ void setup() {
 
 
 void draw() {
+
+  // Show the title screen first, then the difficulty screen and the selected game mode.
   if (screen == 0) {
     if (inStartingScreen) {
       background(arsenalMainBg);
@@ -175,6 +190,7 @@ void draw() {
     uclSpeed = 3;
     background(200, 0, 0);
     difficulty = 1;
+
     if (gameOver == true) {
       saveHighScore();
       screen = 5;
@@ -184,6 +200,7 @@ void draw() {
       textSize(30);
       text("Your Score was: " + score, 240, 250);
       text("You helped Arsenal win " + score/5 + " UCLs!!", 160, 400);
+
       // Display Easy Mode High Score
       fill(255, 215, 0);
       textSize(22);
@@ -197,6 +214,7 @@ void draw() {
     uclSpeed = 7;
     difficulty = 2;
     background(200, 0, 0);
+
     if (gameOver == true) {
       saveHighScore();
       screen = 5;
@@ -214,26 +232,32 @@ void draw() {
       text("Press 'R' to Restart the level", 220, 470);
     }
   }
+
+  // The following game logic is shared by Easy and Hard mode.
   if (screen == 2 || screen == 3) {
 
+    // Calculate the remaining time using the time the level started and the current elapsed time.
     if (difficulty == 1) {
       timeLeft = 60 - (millis() - startTime)/1000;
     } else if (difficulty == 2) {
-      timeLeft = 30 - (millis() - startTime)/ 1000;
+      timeLeft = 30 - (millis() - startTime)/1000;
     }
 
-
+    // End the round when the countdown reaches zero.
     if (timeLeft <= 0) {
       timeLeft = 0;
-      gameOver=true;
+      gameOver = true;
     }
 
-
     background(arsenalGameBg);
+
+    // Only move the player while the game is active.
     if (gameOver == false) {
       arsenalX = arsenalX + (int)arsenalMoveX;
       arsenalY = arsenalY + (int)arsenalMoveY;
     }
+
+    // Keep the Arsenal logo inside the game window so it cannot move off-screen.
     if (arsenalX < 0) {
       arsenalX = 0;
     }
@@ -249,7 +273,6 @@ void draw() {
     if (arsenalY > height - 100) {
       arsenalY = height - 100;
     }
-
 
     image(arsenal, arsenalX, arsenalY, 70, 70);
     fill(200, 0, 0);
@@ -272,13 +295,16 @@ void draw() {
     fill(255, 255, 255);
     text("Time: " + timeLeft, 465, 40);
 
+    // Move and check the real UCL trophy only while the round is still active.
     if (gameOver == false) {
+
       // ucl trophy movement
       float directionX = uclTargetX - uclX;
       float directionY = uclTargetY - uclY;
 
       float distance = dist(uclX, uclY, uclTargetX, uclTargetY);
 
+      // Move the trophy toward its target. When it reaches the target, choose a new random destination.
       if (distance > uclSpeed) {
         uclX = uclX + (directionX/distance) * uclSpeed;
         uclY = uclY + (directionY/distance) * uclSpeed;
@@ -286,15 +312,20 @@ void draw() {
         uclTargetX = random(0, width - 50);
         uclTargetY = random(70, height - 80);
       }
+
       image(ucl, uclX, uclY, 50, 80);
+
+      // Check whether the Arsenal player overlaps the real UCL trophy (collision detection).
       if (arsenalX + 70 >= uclX &&
         arsenalX <= uclX + 30 &&
         arsenalY + 70 >= uclY &&
         arsenalY <= uclY + 30) {
 
+        // Award points and play the sound only once per touch, not on every frame of overlap.
         if (touching == false) {
           score = score + 1;
           trophyCollectSound.play();
+
           // Move the UCL to a new random location
           uclX = random(0, width - 50);
           uclY = random(70, height - 80);
@@ -307,6 +338,8 @@ void draw() {
       } else {
         touching = false;
       }
+
+      // Move the fake trophy toward a random target, using the same movement idea as the real trophy.
       // Fake trophy movement
       float fakeDirectionX = fakeTrophyTargetX - fakeTrophyX;
       float fakeDirectionY = fakeTrophyTargetY - fakeTrophyY;
@@ -326,11 +359,14 @@ void draw() {
       image(fakeTrophy, fakeTrophyX, fakeTrophyY, 50, 80);
 
       // Check if Arsenal touches the fake trophy
+
+      // Check for a collision with the fake trophy. Collecting it removes one point if the score is above zero.
       if (arsenalX + 70 >= fakeTrophyX &&
         arsenalX <= fakeTrophyX + 50 &&
         arsenalY + 70 >= fakeTrophyY &&
         arsenalY <= fakeTrophyY + 80) {
 
+        // This flag makes sure the penalty and sound happen only once for each collision.
         if (touchingFake == false) {
 
           if (score > 0) {
@@ -352,6 +388,8 @@ void draw() {
       }
     }
   }
+
+  // Display the Main Menu button and play the game-over sound once.
   if (screen == 5 && gameOver == true) {
     fill(239, 1, 7);
     stroke(255, 255, 255); //adds a border around the rectangle
@@ -371,10 +409,10 @@ void draw() {
 }
 
 
-
 void mousePressed() {
 
-  if (screen == 0 && inStartingScreen ) {
+  // On the title screen, check whether the mouse click is inside the Play button.
+  if (screen == 0 && inStartingScreen) {
 
     if (mouseX >= playButtonMinX && mouseX <= playButtonMaxX
       && mouseY >= playButtonMinY && mouseY <= playButtonMaxY) {
@@ -383,13 +421,14 @@ void mousePressed() {
       screen = 1;
     }
   } else if (screen == 1) {
+
     if (mouseX >= easyMinX && mouseX <= easyMaxX
       && mouseY >= easyMinY && mouseY <= easyMaxY) {
 
       difficulty = 1;
       screen = 2;
       startTime = millis();
-      timeLeft=60;
+      timeLeft = 60;
       score = 0;
       gameOver = false;
       touching = false;
@@ -403,12 +442,13 @@ void mousePressed() {
       fakeTrophyTargetY = random(70, height - 80);
 
       println("Easy clicked");
+
     } else if (mouseX >= hardMinX && mouseX <= hardMaxX
       && mouseY >= hardMinY && mouseY <= hardMaxY) {
 
       difficulty = 2;
       screen = 3;
-      startTime=millis();
+      startTime = millis();
       timeLeft = 30;
       score = 0;
       gameOver = false;
@@ -421,12 +461,16 @@ void mousePressed() {
 
       fakeTrophyTargetX = random(0, width - 50);
       fakeTrophyTargetY = random(70, height - 80);
+
       println("Hard clicked");
     }
   }
+
+  // If Main Menu is clicked, stop all sounds and reset the game back to the title screen.
   if (screen == 5 && gameOver == true) {
     if (mouseX >= 259 && mouseX <= 439 &&
       mouseY >= 515 && mouseY <= 565) {
+
       trophyCollectSound.stop();
       errorTrophy.stop();
       gameOverSound.stop();
@@ -446,41 +490,56 @@ void mousePressed() {
   }
 }
 
+
 void keyPressed() {
+  // Start movement when the player presses W, A, S, or D. Also handles restarting after game over.
   println("Key " + key + " was pressed (" + keyCode + ")");
+
   if (screen == 2 || screen == 3) {
     if (key == 'w' || key == 'W') {
       arsenalMoveY = -arsenalSpeed;
     }
+
     if (key == 'a' || key == 'A') {
       arsenalMoveX = -arsenalSpeed;
     }
+
     if (key == 's' || key == 'S') {
       arsenalMoveY = arsenalSpeed;
     }
+
     if (key == 'd' || key == 'D') {
       arsenalMoveX = arsenalSpeed;
     }
+
+    // Keep the player's position within the playable area.
     //bounds check
     if (arsenalX < 0) {
-      arsenalX = 0 ;
+      arsenalX = 0;
     }
+
     if (arsenalY < 53) {
       arsenalY = 53;
     }
+
     int maxX = width - 160;
+
     if (arsenalX > maxX) {
       arsenalX = maxX;
     }
+
     int maxY = height - 160;
 
     if (arsenalY > maxY) {
       arsenalY = maxY;
     }
   }
+
+  // Allow the player to restart the same difficulty by pressing R on the game-over screen.
   if (screen == 5) {
     if (screen == 5) {
       if (key == 'R' || key == 'r') {
+
         trophyCollectSound.stop();
         errorTrophy.stop();
         gameOverSound.stop();
@@ -522,8 +581,8 @@ void keyPressed() {
 }
 
 
-
 void keyReleased() {
+  // Stop movement on an axis when its corresponding movement key is released.
   if (key == 'w' || key == 'W' || key == 's' || key == 'S') {
     arsenalMoveY = 0;
   }
@@ -533,24 +592,46 @@ void keyReleased() {
   }
 }
 
+
 void saveHighScore() {
+  // Convert the score into UCLs won (one UCL for every five points).
   int uclsWon = score / 5;
 
+  // Check if the player is playing Easy Mode.
   if (difficulty == 1) {
+
+    // Only update the high score if the new score is higher than the previous record.
     if (uclsWon > easyHighScore) {
 
+      // Update the Easy Mode high score.
       easyHighScore = uclsWon;
+
+      // Create a JSON object to store the high score.
       JSONObject easyObj = new JSONObject();
+
+      // Store the high score under the key "highScore".
       easyObj.setInt("highScore", easyHighScore);
 
+      // Save the updated high score to a JSON file.
       saveJSONObject(easyObj, "easyHighScore.json");
     }
+
+  // Check if the player is playing Hard Mode.
   } else if (difficulty == 2) {
+
+    // Only update the high score if the new score is higher than the previous record.
     if (uclsWon > hardHighScore) {
+
+      // Update the Hard Mode high score.
       hardHighScore = uclsWon;
+
+      // Create a JSON object to store the high score.
       JSONObject hardObj = new JSONObject();
+
+      // Store the high score under the key "highScore".
       hardObj.setInt("highScore", hardHighScore);
 
+      // Save the updated high score to a JSON file.
       saveJSONObject(hardObj, "hardHighScore.json");
     }
   }
