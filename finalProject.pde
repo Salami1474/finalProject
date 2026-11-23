@@ -91,6 +91,7 @@ int hardHighScore = 0;
 // These booleans prevent repeated collision effects and repeated game-over sounds.
 boolean gameOver = false;
 boolean gameOverSoundPlayed = false;
+boolean highScoreSaved = false;
 
 boolean touching = false;
 
@@ -192,7 +193,11 @@ void draw() {
     difficulty = 1;
 
     if (gameOver == true) {
-      saveHighScore();
+      if (highScoreSaved == false) {
+        saveHighScore();
+        highScoreSaved = true;
+      }
+
       screen = 5;
       background(0, 0, 0);
       textSize(50);
@@ -216,7 +221,11 @@ void draw() {
     background(200, 0, 0);
 
     if (gameOver == true) {
-      saveHighScore();
+      if (highScoreSaved == false) {
+        saveHighScore();
+        highScoreSaved = true;
+      }
+
       screen = 5;
       background(0, 0, 0);
       textSize(50);
@@ -476,6 +485,7 @@ void mousePressed() {
       gameOverSound.stop();
 
       gameOverSoundPlayed = false;
+      highScoreSaved = false;
       screen = 0;
       inStartingScreen = true;
       gameOver = false;
@@ -491,10 +501,9 @@ void mousePressed() {
 }
 
 
-void keyPressed() {
-  // Start movement when the player presses W, A, S, or D. Also handles restarting after game over.
-  println("Key " + key + " was pressed (" + keyCode + ")");
 
+void keyPressed() {
+  // Start movement when the player presses W, A, S, or D.
   if (screen == 2 || screen == 3) {
     if (key == 'w' || key == 'W') {
       arsenalMoveY = -arsenalSpeed;
@@ -511,55 +520,53 @@ void keyPressed() {
     if (key == 'd' || key == 'D') {
       arsenalMoveX = arsenalSpeed;
     }
+  }
 
+  // Restart the game when R is pressed on the game-over screen.
+  if (screen == 5 && (key == 'R' || key == 'r')) {
 
+    trophyCollectSound.stop();
+    errorTrophy.stop();
+    gameOverSound.stop();
 
+    gameOverSoundPlayed = false;
+    gameOver = false;
+    highScoreSaved = false;
+    score = 0;
+    touching = false;
+    touchingFake = false;
 
-    // Allow the player to restart the same difficulty by pressing R on the game-over screen.
-    if (screen == 5) {
-      if (screen == 5) {
-        if (key == 'R' || key == 'r') {
+    // Reset Arsenal's position and movement.
+    arsenalX = 220;
+    arsenalY = 100;
+    arsenalMoveX = 0;
+    arsenalMoveY = 0;
 
-          trophyCollectSound.stop();
-          errorTrophy.stop();
-          gameOverSound.stop();
+    // Reset the real UCL position.
+    uclX = 100;
+    uclY = 170;
+    uclTargetX = random(0, width - 50);
+    uclTargetY = random(70, height - 80);
 
-          gameOverSoundPlayed = false;
-          gameOver = false;
-          score = 0;
-          touching = false;
+    // Reset the fake trophy position.
+    fakeTrophyX = random(0, width - 50);
+    fakeTrophyY = random(70, height - 80);
+    fakeTrophyTargetX = random(0, width - 50);
+    fakeTrophyTargetY = random(70, height - 80);
 
-          // Reset Arsenal's position
-          arsenalX = 220;
-          arsenalY = 100;
-
-          // Reset Arsenal's movement
-          arsenalMoveX = 0;
-          arsenalMoveY = 0;
-
-          // Reset the UCL position
-          uclX = 100;
-          uclY = 170;
-
-          uclTargetX = random(0, width - 50);
-          uclTargetY = random(70, height - 80);
-
-          if (difficulty == 1) {
-            screen = 2;
-            timeLeft = 60;
-          } else if (difficulty == 2) {
-            screen = 3;
-            timeLeft = 30;
-          }
-
-          startTime = millis();
-
-          return;
-        }
-      }
+    // Return to the selected difficulty.
+    if (difficulty == 1) {
+      screen = 2;
+      timeLeft = 60;
+    } else if (difficulty == 2) {
+      screen = 3;
+      timeLeft = 30;
     }
+
+    startTime = millis();
   }
 }
+
 
 
 void keyReleased() {
