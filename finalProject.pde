@@ -317,8 +317,8 @@ void draw() {
 
       // Check whether the Arsenal player overlaps the real UCL trophy (collision detection).
       if (arsenalX + 70 >= uclX &&
-        arsenalX <= uclX + 30 &&
-        arsenalY + 70 >= uclY &&
+        arsenalX <= uclX + 50 &&
+        arsenalY + 80 >= uclY &&
         arsenalY <= uclY + 30) {
 
         // Award points and play the sound only once per touch, not on every frame of overlap.
@@ -371,8 +371,9 @@ void draw() {
 
           if (score > 0) {
             score = score - 1;
-            errorTrophy.play();
           }
+
+          errorTrophy.play();
 
           // Move fake trophy to a new random location
           fakeTrophyX = random(0, width - 50);
@@ -442,7 +443,6 @@ void mousePressed() {
       fakeTrophyTargetY = random(70, height - 80);
 
       println("Easy clicked");
-
     } else if (mouseX >= hardMinX && mouseX <= hardMaxX
       && mouseY >= hardMinY && mouseY <= hardMaxY) {
 
@@ -512,69 +512,50 @@ void keyPressed() {
       arsenalMoveX = arsenalSpeed;
     }
 
-    // Keep the player's position within the playable area.
-    //bounds check
-    if (arsenalX < 0) {
-      arsenalX = 0;
-    }
 
-    if (arsenalY < 53) {
-      arsenalY = 53;
-    }
 
-    int maxX = width - 160;
 
-    if (arsenalX > maxX) {
-      arsenalX = maxX;
-    }
-
-    int maxY = height - 160;
-
-    if (arsenalY > maxY) {
-      arsenalY = maxY;
-    }
-  }
-
-  // Allow the player to restart the same difficulty by pressing R on the game-over screen.
-  if (screen == 5) {
+    // Allow the player to restart the same difficulty by pressing R on the game-over screen.
     if (screen == 5) {
-      if (key == 'R' || key == 'r') {
+      if (screen == 5) {
+        if (key == 'R' || key == 'r') {
 
-        trophyCollectSound.stop();
-        errorTrophy.stop();
-        gameOverSound.stop();
+          trophyCollectSound.stop();
+          errorTrophy.stop();
+          gameOverSound.stop();
 
-        gameOverSoundPlayed = false;
-        gameOver = false;
-        score = 0;
-        touching = false;
+          gameOverSoundPlayed = false;
+          gameOver = false;
+          score = 0;
+          touching = false;
 
-        // Reset Arsenal's position
-        arsenalX = 220;
-        arsenalY = 100;
+          // Reset Arsenal's position
+          arsenalX = 220;
+          arsenalY = 100;
 
-        // Reset Arsenal's movement
-        arsenalMoveX = 0;
-        arsenalMoveY = 0;
+          // Reset Arsenal's movement
+          arsenalMoveX = 0;
+          arsenalMoveY = 0;
 
-        // Reset the UCL position
-        uclX = 100;
-        uclY = 170;
+          // Reset the UCL position
+          uclX = 100;
+          uclY = 170;
 
-        uclTargetX = random(0, width - 50);
-        uclTargetY = random(70, height - 80);
+          uclTargetX = random(0, width - 50);
+          uclTargetY = random(70, height - 80);
 
-        if (difficulty == 1) {
-          screen = 2;
-          timeLeft = 60;
-        } else if (difficulty == 2) {
-          screen = 3;
-          timeLeft = 30;
+          if (difficulty == 1) {
+            screen = 2;
+            timeLeft = 60;
+          } else if (difficulty == 2) {
+            screen = 3;
+            timeLeft = 30;
+          }
+
+          startTime = millis();
+
+          return;
         }
-
-        startTime = millis();
-
-        return;
       }
     }
   }
@@ -616,7 +597,7 @@ void saveHighScore() {
       saveJSONObject(easyObj, "easyHighScore.json");
     }
 
-  // Check if the player is playing Hard Mode.
+    // Check if the player is playing Hard Mode.
   } else if (difficulty == 2) {
 
     // Only update the high score if the new score is higher than the previous record.
