@@ -281,7 +281,7 @@ void draw() {
       arsenalY = height - 100;
     }
 
-    image(arsenal, arsenalX, arsenalY, 70, 70);
+    image(arsenal, arsenalX, arsenalY, 55,55);
     fill(200, 0, 0);
     noStroke();
     rect(20, 8, 310, 45, 25);
@@ -323,10 +323,10 @@ void draw() {
       image(ucl, uclX, uclY, 50, 80);
 
       // Check whether the Arsenal player overlaps the real UCL trophy (collision detection).
-      if (arsenalX + 70 >= uclX &&
-        arsenalX <= uclX + 50 &&
-        arsenalY + 80 >= uclY &&
-        arsenalY <= uclY + 30) {
+      if (arsenalX + 57.5 >= uclX &&
+        arsenalX + 12.5 <= uclX + 50 &&
+        arsenalY + 57.5 >= uclY &&
+        arsenalY + 12.5 <= uclY + 80) {
 
         // Award points and play the sound only once per touch, not on every frame of overlap.
         if (touching == false) {
@@ -368,10 +368,10 @@ void draw() {
       // Check if Arsenal touches the fake trophy
 
       // Check for a collision with the fake trophy. Collecting it removes one point if the score is above zero.
-      if (arsenalX + 70 >= fakeTrophyX &&
-        arsenalX <= fakeTrophyX + 50 &&
-        arsenalY + 70 >= fakeTrophyY &&
-        arsenalY <= fakeTrophyY + 80) {
+      if (arsenalX + 57.5 >= fakeTrophyX &&
+        arsenalX + 12.5 <= fakeTrophyX + 50 &&
+        arsenalY + 57.5 >= fakeTrophyY &&
+        arsenalY + 12.5 <= fakeTrophyY + 80) {
 
         // This flag makes sure the penalty and sound happen only once for each collision.
         if (touchingFake == false) {
