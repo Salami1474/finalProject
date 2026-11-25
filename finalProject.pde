@@ -11,9 +11,7 @@ import processing.sound.*;
  The objective is to collect as much trophies as you can.
  */
 
-/* To do:
- Add sound
- */
+
 
 // Images used for the player, trophies, and different game backgrounds.
 PImage arsenal;
