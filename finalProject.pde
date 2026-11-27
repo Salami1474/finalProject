@@ -168,7 +168,12 @@ void draw() {
       image(ucl, 510, 170, 80, 120);
       textSize(25);
       text("How many UCLs can you win with Arsenal?", 130, 370);
-      fill(230, 0, 0);
+      if (mouseX >= playButtonMinX && mouseX <= playButtonMaxX &&
+        mouseY >= playButtonMinY && mouseY <= playButtonMaxY) {
+        fill(150, 0, 0);
+      } else {
+        fill(230, 0, 0);
+      }
       stroke(255, 255, 255);
       rect(playButtonMinX, playButtonMinY, 120, 120, 25);
       stroke(0, 0, 0);
@@ -281,7 +286,7 @@ void draw() {
       arsenalY = height - 100;
     }
 
-    image(arsenal, arsenalX, arsenalY, 55,55);
+    image(arsenal, arsenalX, arsenalY, 55, 55);
     fill(200, 0, 0);
     noStroke();
     rect(20, 8, 310, 45, 25);
